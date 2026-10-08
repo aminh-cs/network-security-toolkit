@@ -1,5 +1,5 @@
 import pytest
-from src.network_toolkit.ip_utils import get_ip_information
+from network_toolkit.ip_utils import get_ip_information
 
 
 def test_private_ipv4_address():

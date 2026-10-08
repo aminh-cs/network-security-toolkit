@@ -1,4 +1,4 @@
-from src.network_toolkit.subnet import get_subnet_information
+from network_toolkit.subnet import get_subnet_information
 
 
 def test_ipv4_subnet():
