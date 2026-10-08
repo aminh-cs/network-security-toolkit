@@ -46,3 +46,31 @@ def test_invalid_ip_command(capsys, monkeypatch):
     captured = capsys.readouterr()
 
     assert "does not appear to be an IPv4 or IPv6 address" in captured.err
+
+
+def test_port_command(capsys, monkeypatch):
+    monkeypatch.setattr(
+        "sys.argv",
+        ["network-toolkit", "port", "443"],
+    )
+
+    main()
+
+    captured = capsys.readouterr()
+
+    assert "port: 443" in captured.out
+    assert "category: well-known" in captured.out
+
+
+def test_port_out_of_range(capsys, monkeypatch):
+    monkeypatch.setattr(
+        "sys.argv",
+        ["network-toolkit", "port", "65536"],
+    )
+
+    with pytest.raises(SystemExit):
+        main()
+
+    captured = capsys.readouterr()
+
+    assert "port must be between 0 and 65535" in captured.err
