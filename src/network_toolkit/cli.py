@@ -3,6 +3,7 @@ import argparse
 from .ip_utils import get_ip_information
 from .ports import get_port_information
 from .subnet import get_subnet_information
+from .connectivity import check_tcp_connectivity
 
 
 def main() -> None:
@@ -43,6 +44,26 @@ def main() -> None:
         help="Port number from 0 to 65535",
     )
 
+    check_parser = subparsers.add_parser(
+        "check",
+        help="Check TCP connectivity to a host and port",
+    )
+    check_parser.add_argument(
+        "host",
+        help="Hostname or IP address",
+    )
+    check_parser.add_argument(
+        "port",
+        type=int,
+        help="TCP port number",
+    )
+    check_parser.add_argument(
+        "--timeout",
+        type=float,
+        default=3.0,
+        help="Connection timeout in seconds (default: 3)",
+    )
+
     args = parser.parse_args()
 
     try:
@@ -50,11 +71,16 @@ def main() -> None:
             result = get_ip_information(args.address)
         elif args.command == "subnet":
             result = get_subnet_information(args.network)
-        else:
+        elif args.command == "port":
             result = get_port_information(args.port)
+        else:
+            result = check_tcp_connectivity(
+                args.host,
+                args.port,
+                timeout=args.timeout,
+            )
 
     except (TypeError, ValueError) as error:
         parser.error(str(error))
-
     for key, value in result.items():
         print(f"{key}: {value}")

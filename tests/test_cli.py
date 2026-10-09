@@ -1,6 +1,7 @@
 import pytest
 
 from network_toolkit.cli import main
+from unittest.mock import patch
 
 
 def test_ip_command(capsys, monkeypatch):
@@ -74,3 +75,35 @@ def test_port_out_of_range(capsys, monkeypatch):
     captured = capsys.readouterr()
 
     assert "port must be between 0 and 65535" in captured.err
+def test_check_command(capsys, monkeypatch):
+    monkeypatch.setattr(
+        "sys.argv",
+        ["network-toolkit", "check", "127.0.0.1", "443"],
+    )
+
+    with patch(
+        "network_toolkit.connectivity.socket.create_connection"
+    ) as mock_connect:
+        mock_connect.return_value.__enter__.return_value = None
+        main()
+
+    captured = capsys.readouterr()
+
+    assert "host: 127.0.0.1" in captured.out
+    assert "port: 443" in captured.out
+    assert "reachable: True" in captured.out
+    assert "status: connected" in captured.out
+
+
+def test_check_invalid_port(capsys, monkeypatch):
+    monkeypatch.setattr(
+        "sys.argv",
+        ["network-toolkit", "check", "127.0.0.1", "65536"],
+    )
+
+    with pytest.raises(SystemExit):
+        main()
+
+    captured = capsys.readouterr()
+
+    assert "port must be between 1 and 65535" in captured.err
