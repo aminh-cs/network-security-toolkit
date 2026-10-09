@@ -1,5 +1,7 @@
 # Network Security Toolkit
 
+[![Tests](https://github.com/aminh-cs/network-security-toolkit/actions/workflows/tests.yml/badge.svg)](https://github.com/aminh-cs/network-security-toolkit/actions/workflows/tests.yml)
+
 A Python command-line toolkit for IP address analysis, subnet calculations, port classification, and TCP connectivity testing.
 
 Built as a practical project to strengthen my understanding of computer networking, Python, and network security fundamentals.
